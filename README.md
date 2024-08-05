@@ -8,6 +8,7 @@ This repository contains the code for the Dental Health Staffing application, de
 - **Create Account Page:** Allows users to create a new account with secure password validation.
 - **Responsive Design:** Adapts to different screen sizes and platforms.
 - **Firebase Integration:** (To be implemented) For user data management.
+- **Map Page:** (To be implemented) To find jobs, needs to read data, and render on map page for the user.
 
 ## Installation
 
