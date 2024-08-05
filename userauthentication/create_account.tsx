@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Pressable, ImageBackground, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Pressable, ImageBackground, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './types'; // Import the types
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -19,7 +21,9 @@ const CreateAccountPage = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [passwordStrength, setPasswordStrength] = useState('');
-  const [keyboardVisible, setKeyboardVisible] = useState(false); // Add keyboardVisible state
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const loadResources = async () => {
@@ -67,8 +71,16 @@ const CreateAccountPage = () => {
 
   const handleCreateAccount = () => {
     if (passwordStrength === 'strong') {
-      // Process account creation with Firebase
-      alert('Account created successfully!');
+      Alert.alert(
+        "Account Created Successfully!",
+        "You may login now.",
+        [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate('Login')
+          }
+        ]
+      );
     } else {
       alert('Password is not strong enough.');
     }
@@ -151,11 +163,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     marginHorizontal: 20,
-    marginVertical: 40,
+    marginTop: 140, // Adjust this value to reduce the top margin
+    marginBottom: 0, // Adjust this value to reduce the bottom margin
   },
   title: {
     fontFamily: 'Avenir',
@@ -167,6 +182,7 @@ const styles = StyleSheet.create({
   nameContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 10,
   },
   nameInput: {
     width: '48%',
@@ -175,7 +191,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 20,
+    marginBottom: 14,
     paddingHorizontal: 10,
     fontFamily: 'Avenir',
     borderRadius: 10,
@@ -186,6 +202,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonPressed: {
     backgroundColor: '#0056b3',
@@ -197,7 +214,7 @@ const styles = StyleSheet.create({
   },
   passwordWarning: {
     color: 'red',
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: 'center',
   },
 });

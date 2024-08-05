@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import LottieView from 'lottie-react-native';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { RootStackParamList } from '../types'; // Import types
+import { RootStackParamList } from './types'; // Import types
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,10 +58,11 @@ const LoginPage = () => {
   const handleLogin = () => {
     setIsLoading(true);
     setTimeout(() => {
-      setIsLoading(false); // This simulates a login delay
+      setIsLoading(false);
+      navigation.navigate('MapPage'); // Navigate to MapPage
     }, 2000);
   };
-
+  
   if (!dataLoaded) {
     return null; // Return null while the splash screen is shown
   }
