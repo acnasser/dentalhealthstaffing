@@ -1,27 +1,30 @@
 import React from 'react';
-import { View, StyleSheet, TextInput, ImageBackground } from 'react-native';
+import { View, StyleSheet, TextInput } from 'react-native';
 import MapView from 'react-native-maps';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const MapPage = () => {
   return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      />
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search..."
-          placeholderTextColor="#999"
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
         />
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search..."
+            placeholderTextColor="#999"
+          />
+        </View>
       </View>
-    </View>
+    </GestureHandlerRootView>
   );
 };
 

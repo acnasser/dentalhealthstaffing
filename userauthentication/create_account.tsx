@@ -70,20 +70,14 @@ const CreateAccountPage = () => {
   };
 
   const handleCreateAccount = () => {
-    if (passwordStrength === 'strong') {
-      Alert.alert(
-        "Account Created Successfully!",
-        "You may login now.",
-        [
-          {
-            text: "OK",
-            onPress: () => navigation.navigate('Login')
-          }
-        ]
-      );
-    } else {
-      alert('Password is not strong enough.');
-    }
+    // Placeholder for backend integration to create an account
+    console.log('Account created');
+    Alert.alert('Account Created Successfully!', 'You may create your profile now.', [
+      {
+        text: 'OK',
+        onPress: () => navigation.navigate('CreateProfile'),
+      },
+    ]);
   };
 
   if (!dataLoaded) {
