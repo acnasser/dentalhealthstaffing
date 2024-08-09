@@ -4,6 +4,9 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from './types'; // Import the types
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { auth, db } from '../firebaseConfig'; // Import Firebase config
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -55,7 +58,6 @@ const CreateAccountPage = () => {
   }, []);
 
   const validatePassword = (password: string) => {
-    // Validate password strength
     const length = password.length >= 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
@@ -69,19 +71,37 @@ const CreateAccountPage = () => {
     }
   };
 
-  const handleCreateAccount = () => {
-    // Placeholder for backend integration to create an account
-    console.log('Account created');
-    Alert.alert('Account Created Successfully!', 'You may create your profile now.', [
-      {
-        text: 'OK',
-        onPress: () => navigation.navigate('CreateProfile'),
-      },
-    ]);
+  const handleCreateAccount = async () => {
+    try {
+      // Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Save user info in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        // It's not a good practice to store the password directly, this is for demo purposes
+        password: password,
+      });
+
+      Alert.alert('Account Created Successfully!', 'You may create your profile now.', [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('CreateProfile'),
+        },
+      ]);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      Alert.alert('Error', errorMessage);
+    }
   };
 
   if (!dataLoaded) {
-    return null; // Return null while the splash screen is shown
+    return null;
   }
 
   return (
@@ -163,8 +183,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginHorizontal: 20,
-    marginTop: 140, // Adjust this value to reduce the top margin
-    marginBottom: 0, // Adjust this value to reduce the bottom margin
+    marginTop: 140,
+    marginBottom: 0,
   },
   title: {
     fontFamily: 'Avenir',

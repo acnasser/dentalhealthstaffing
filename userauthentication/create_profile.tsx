@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Pressable, ImageBackground, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Alert, Image } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from './types'; // Import the types
+import { RootStackParamList } from './types'; 
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import { auth, db } from '../firebaseConfig'; 
+import { doc, updateDoc } from 'firebase/firestore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -80,19 +82,34 @@ const CreateProfilePage = () => {
     }
   };
 
-  const handleCreateProfile = () => {
-    // Placeholder for backend integration to create a profile
-    console.log('Profile created');
-    Alert.alert('Profile Created Successfully!', 'You may now use the app.', [
-      {
-        text: 'OK',
-        onPress: () => navigation.navigate('MapPage'),
-      },
-    ]);
+  const handleCreateProfile = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+
+        await updateDoc(userRef, {
+          bio: bio,
+          workExperience: workExperience,
+          resume: resume,
+          profileImage: profileImage,
+        });
+
+        Alert.alert('Profile Created Successfully!', 'You may now use the app.', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('MapPage'),
+          },
+        ]);
+      }
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      Alert.alert('Error', errorMessage);
+    }
   };
 
   if (!dataLoaded) {
-    return null; // Return null while the splash screen is shown
+    return null;
   }
 
   return (
@@ -172,11 +189,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginHorizontal: 20,
-    marginTop: 100, // Adjust this value to reduce the top margin
-    marginBottom: 0, // Adjust this value to reduce the bottom margin
+    marginTop: 100,
+    marginBottom: 0,
   },
   containerShifted: {
-    marginTop: 0, // Adjust this value to move up the container when keyboard is visible
+    marginTop: 0,
   },
   title: {
     fontFamily: 'Avenir',

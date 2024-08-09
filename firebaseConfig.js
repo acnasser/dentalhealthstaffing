@@ -1,11 +1,11 @@
-// firebaseConfig.js
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCGN2b8VZIvUCYa-f9Z3iz2nyZQTyhBBUs",
+  apiKey: "AIzaSyCGN2b8v2IvUCYa-f9Z3iz2nyZQTyhBBUs",
   authDomain: "coastal-dental-health-staffing.firebaseapp.com",
   projectId: "coastal-dental-health-staffing",
   storageBucket: "coastal-dental-health-staffing.appspot.com",
@@ -14,8 +14,19 @@ const firebaseConfig = {
   measurementId: "G-D3KKHM0ZD5"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Initialize Firebase if it hasn't been initialized already
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0]; // use the already initialized app
+}
+
+// Use initializeAuth to ensure auth state persistence
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+
 const db = getFirestore(app);
 const storage = getStorage(app);
 
